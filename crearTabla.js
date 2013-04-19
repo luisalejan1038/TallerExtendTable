@@ -1,18 +1,21 @@
 /*****Declaración de variables globales*****/
 var equiposTabla = new Array();
+var fila; 
 
 
-
-/*******Ejecución del Prgrama*****/
+/*******Ejecución del Programa*****/
 $(document).ready(function(){	
 	crearTabla(equiposTabla);
+	//extenderTabla(".miTabla2");
+	extenderTabla(".miTabla");
 }); 
 
 function crearTabla(leenTabla){
 	var papa = $(".miTabla")	
-	for(var i = 0; i < 20; i++)
+	for(var i = 0; i < 500; i++)
 	{
 		var team = new Object(); 
+		team.id = "item" + i;
 		team.pos = i;
 		team.equipo = "equipo" + i; 
 		team.puntos = (2 * i) - 1; 
@@ -20,7 +23,6 @@ function crearTabla(leenTabla){
 	    leenTabla.push(team);	
 	}
 
-	var tbody = $("<tbody>");
 	var tr = $("<tr>");
 	var th1 = $("<th>");
 	th1.text("#");
@@ -34,16 +36,14 @@ function crearTabla(leenTabla){
 	tr.append(th2);
 	tr.append(th3);
 	tr.append(th4);
-	tbody.append(tr); 
-	papa.append(tbody);
+	papa.append(tr);
 
 	for (var i = 0; i < leenTabla.length; i++) {
-		var fila = $("<tr>"); 
+		fila = $("<tr>").addClass("pos" + i); 
 		var pos = $("<td>")
 		var equipo = $("<td>");
 		var puntos = $("<td>");
 		var posicion = $("<td>");
-		var tbody = $("<tbody>");
 		fila.append(pos.text(leenTabla[i].pos));
 		fila.append(equipo.text(leenTabla[i].equipo));
 		fila.append(puntos.text(leenTabla[i].puntos));
@@ -54,7 +54,6 @@ function crearTabla(leenTabla){
 		}else{
 			fila.css("backgroundColor", "#A6B5BF");
 		}
-		tbody.append(fila);
-		papa.append(tbody);
+		papa.append(fila);
 	}
 } 

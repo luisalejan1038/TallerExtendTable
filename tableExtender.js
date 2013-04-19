@@ -1,41 +1,53 @@
 /*****Declaración de variables globales*****/
-var equiposTabla = new Array();
+var boton;
+var val;
 
 
+/*******Ejecución del Programa*****/
+function extenderTabla(selector){
+	var papa = $(selector);
+	tablaInicial(papa);	
+	crearHeader(papa);
+	footerInicial(papa);
+	configBtn(papa);
+}
 
-/*******Ejecución del Prgrama*****/
-$(document).ready(function(){	
-	crearHeader();
-	crearFooter();
-}); 
+/*****Función mostrar tablaInicial*******/
+function tablaInicial(papa){
+	var leng = papa.find("tbody tr").length;
+	for (var i = 0; i < 10; i++) {			
+			papa.find(".pos" + i).show();		
+	}
+	for (var i = 10; i < leng; i++) {			
+			papa.find(".pos" + i).hide();		
+	}
+}
 
-function crearHeader(){	
-	var papa = $(".miTabla");
+
+/*********Función crearHeader********/
+function crearHeader(papa){	
 	var tr = $("<tr>");
 	tr.text("Show"); 
 	var header = $("<thead>");	
 	var input = $("<input>"); 
 	input.align = "right";
-	input.text("Search");
-	input.addClass("span1");	
+	input.text("Search");	
 	input.val("Search");	
 	var select = $("<select>");
 	select.addClass("span1");
+	select.addClass("tamaPag");
 	var opcion1 = $("<option>");	
-	opcion1.text("1"); 
+	opcion1.text("10"); 
 	select.append(opcion1);
 	var opcion2 = $("<option>");
-	opcion2.text("2"); 
+	opcion2.text("25"); 
 	select.append(opcion2);
 	var opcion3 = $("<option>");
-	opcion3.text("3"); 
+	opcion3.text("50"); 
 	select.append(opcion3);
 	var opcion4 = $("<option>");
-	opcion4.text("4"); 
-	select.append(opcion4);
-	var opcion5 = $("<option>");
-	opcion5.text("5"); 
-	select.append(opcion5);
+	opcion4.text("100"); 
+	select.append(opcion4); 
 	tr.append(select);
 	tr.append(input);
     header.append(tr);
@@ -43,8 +55,9 @@ function crearHeader(){
 } 
 
 
-function crearFooter(){	
-	var papa = $(".miTabla"); 
+
+/*********Función footerInicial********/
+function footerInicial(papa){	
 	var tr = $("<tr>");
 	var footer = $("<tfoot>");
 	var divToolbar = $("<div>");
@@ -54,42 +67,200 @@ function crearFooter(){
 	divGroup.addClass("btn-group");
 	var btnFirst = $("<button>");
 	btnFirst.addClass("btn");
+	btnFirst.addClass("First");
 	btnFirst.text("First");
+	btnFirst.data("val", "First");
 	var btnPrevious = $("<button>");
 	btnPrevious.addClass("btn");
+	btnPrevious.addClass("Previous");
 	btnPrevious.text("Previous");
-	var btn1 = $("<button>");
-	btn1.addClass("btn");
-	btn1.text("1");
-	var btn2 = $("<button>");
-	btn2.addClass("btn");
-	btn2.text("2");
-	var btn3 = $("<button>");
-	btn3.addClass("btn");
-	btn3.text("3");
-	var btn4 = $("<button>");
-	btn4.addClass("btn");
-	btn4.text("4");
-	var btn5 = $("<button>");
-	btn5.addClass("btn");
-	btn5.text("5");
+	btnPrevious.data("val", "Previous");	
 	var btnNext = $("<button>");
 	btnNext.addClass("btn");
+	btnNext.addClass("Next");
 	btnNext.text("Next");
+	btnNext.data("val", 1);
 	var btnLast = $("<button>");	
 	btnLast.addClass("btn");
-	btnLast.text("Last");
+	btnLast.addClass("Last");
+	btnLast.text("Last");	
+	btnLast.data("val", "Last");
 	divGroup.append(btnFirst); 
-	divGroup.append(btnPrevious); 
-	divGroup.append(btn1); 
-	divGroup.append(btn2); 
-	divGroup.append(btn3); 
-	divGroup.append(btn4); 
-	divGroup.append(btn5); 
+	divGroup.append(btnPrevious);
+	inicialBtnNumPags(papa, divGroup); 
 	divGroup.append(btnNext); 
 	divGroup.append(btnLast); 
 	divToolbar.append(divGroup);	
 	tr.append(divToolbar);
 	footer.append(tr);
 	papa.append(footer);
+}
+
+
+/*********Función inicialBtnNumPags**********/
+function inicialBtnNumPags(papa, divGroup){
+	var leng = papa.find("tbody tr").length;
+	var numsPagInicial = leng/10;
+	for (var i = 1; i < numsPagInicial; i++) {
+		var btn = $("<button>");
+		btn.addClass("btn");
+		btn.addClass("numsPag" + i);	
+		btn.addClass("boton");	
+		btn.text(i);
+		btn.data("val", i);		
+		divGroup.append(btn);
+	}; 
+}
+
+
+/****************Función configBtn*****************/
+function configBtn(papa){
+	var pageSize = 10;
+	papa.find(".tamaPag").click(function(){  //botones Select-Option
+		var pageSize = $(this).val();
+		console.log(pageSize);
+		mostrarTamaPag(papa, pageSize); 
+		//mostrarNextPag(papa, pageSize, val);		
+	});
+
+	papa.find(".First").click(function(){    //boton clase First
+		val = $(this).data("val");
+		//console.log(val);
+		mostrarFirstPag(papa, pageSize);
+	});
+
+	papa.find(".Previous").click(function(){    //boton clase Previous
+		val = $(this).data("val");
+		//console.log(val);
+		mostrarPreviousPag();
+	});
+
+	papa.find(".boton").click(function(){    //clase botones numeración página
+		val = $(this).data("val");
+		//console.log(val);
+		mostrarPagNum(papa, pageSize);
+	});
+
+	papa.find(".Next").click(function(){    //boton clase Next
+		val = $(this).data("val");
+		//console.log(val);
+		mostrarNextPag(papa, pageSize, val);
+	});
+
+	papa.find(".Last").click(function(){    //boton clase Last
+		val = $(this).data("val");
+		//console.log(val);
+		mostrarLastPag(papa, pageSize);
+	});
+}
+
+
+/***************Función mostrarTamaPag**************/
+function mostrarTamaPag(papa, pageSize){
+	var leng = papa.find("tbody tr").length;
+	for (var i = 0; i < pageSize; i++) {			
+			papa.find(".pos" + i).show();		
+	}
+	for (var i = pageSize; i < leng; i++) {			
+			papa.find(".pos" + i).hide();		
+	}
+	configNumBtn(papa, pageSize);
+}
+
+
+
+/***************Función configNumBtn**************/
+function configNumBtn(papa, pageSize){
+	var leng = papa.find("tbody tr").length;
+	leng = Math.floor(leng);
+	var numsPag = leng/pageSize;
+	numsPag = Math.floor(numsPag);
+	var numsPagInicial = leng/10;
+	numsPagInicial = Math.floor(numsPagInicial);	
+	for (var i = 1; i <= numsPag; i++) {						
+			papa.find(".numsPag" + i).show();	
+	}
+	for (var i = numsPag + 1; i <= numsPagInicial; i++) {			
+			papa.find(".numsPag" + i).hide();					
+	}
+	//var val = 1; 
+	//papa.find(".Next").data("val", val);
+	//mostrarNextPag(papa, pageSize, val); 
+}
+
+
+/***************Función mostrarFirstPag**************/
+function mostrarFirstPag(papa, pageSize){
+	var leng = papa.find("tbody tr").length;
+	for (var i = 0; i < 10; i++) {			
+			papa.find(".pos" + i).show();		
+	}
+	for (var i = 10; i < leng; i++) {			
+			papa.find(".pos" + i).hide();		
+	}
+}
+
+
+/***************Función mostrarPreviousPag**************/
+function mostrarPreviousPag(papa, pageSize){
+	var leng = papa.find("tbody tr").length;
+	for (var i = 0; i < 10; i++) {			
+			papa.find(".pos" + i).show();		
+	}
+	for (var i = 10; i < leng; i++) {			
+			papa.find(".pos" + i).hide();		
+	}
+}
+
+
+/***************Función mostrarPagNum**************/
+function mostrarPagNum(papa, pageSize){
+	var leng = papa.find("tbody tr").length;
+	for (var i = 0; i < 10; i++) {			
+			papa.find(".pos" + i).show();		
+	}
+	for (var i = 10; i < leng; i++) {			
+			papa.find(".pos" + i).hide();		
+	}
+}
+
+
+/***************Función mostrarNextPag**************/
+function mostrarNextPag(papa, pageSize, val){	
+	if (val == 1){
+		var val = $(".Next").data("val");
+		var leng = papa.find("tbody tr").length;
+		for (var i = val*pageSize; i < (val + 1)*pageSize; i++) {			
+				papa.find(".pos" + i).show();		
+		}	
+		for (var i = 0; i < val*pageSize; i++) {			
+				papa.find(".pos" + i).hide();		
+		}
+		val += 1;
+		papa.find(".Next").data("val", val);
+	}else if (val != 1){
+		papa.find(".Next").data("val", val);
+		var val = $(".Next").data("val");
+		var leng = papa.find("tbody tr").length;
+		for (var i = val*pageSize; i < (val + 1)*pageSize; i++) {			
+				papa.find(".pos" + i).show();		
+		}	
+		for (var i = 0; i < val*pageSize; i++) {			
+				papa.find(".pos" + i).hide();		
+		}
+		val += 1;
+		papa.find(".Next").data("val", val);
+	}	
+}
+
+
+/***************Función mostrarLastPag**************/
+function mostrarLastPag(papa, pageSize){
+	var leng = papa.find("tbody tr").length;
+	for (var i = 0; i < 10; i++) {			
+			papa.find(".pos" + i).show();		
+	}
+	for (var i = 10; i < leng; i++) {			
+			papa.find(".pos" + i).hide();		
+	}
 }
