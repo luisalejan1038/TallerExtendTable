@@ -1,43 +1,26 @@
-/*****Declaración de variables globales*****/
-var boton;
-var val;
-
-
 /*******Ejecución del Programa*****/
 function extenderTabla(selector){
-	var papa = $(selector);
-	tablaInicial(papa);	
+	var papa = $(selector);	
 	crearHeader(papa);
 	footerInicial(papa);
-	configBtn(papa);
-}
-
-/*****Función mostrar tablaInicial*******/
-function tablaInicial(papa){
-	var leng = papa.find("tbody tr").length;
-	for (var i = 0; i < 10; i++) {			
-			papa.find(".pos" + i).show();		
-	}
-	for (var i = 10; i < leng; i++) {			
-			papa.find(".pos" + i).hide();		
-	}
+	configBtns(papa);
 }
 
 
 /*********Función crearHeader********/
 function crearHeader(papa){	
 	var tr = $("<tr>");
-	tr.text("Show"); 
-	var header = $("<thead>");	
-	var input = $("<input>"); 
-	input.align = "right";
-	input.text("Search");	
-	input.val("Search");	
+	tr.text("Show "); 
+	var header = $("<thead>");		
 	var select = $("<select>");
 	select.addClass("span1");
 	select.addClass("tamaPag");
+	var opcion0 = $("<option>");	
+	opcion0.text(""); 
+	select.append(opcion0);	
 	var opcion1 = $("<option>");	
-	opcion1.text("10"); 
+	opcion1.text("10");
+	opcion1.addClass("tamaPag1");
 	select.append(opcion1);
 	var opcion2 = $("<option>");
 	opcion2.text("25"); 
@@ -49,11 +32,9 @@ function crearHeader(papa){
 	opcion4.text("100"); 
 	select.append(opcion4); 
 	tr.append(select);
-	tr.append(input);
     header.append(tr);
 	papa.append(header);	
 } 
-
 
 
 /*********Función footerInicial********/
@@ -69,12 +50,11 @@ function footerInicial(papa){
 	btnFirst.addClass("btn");
 	btnFirst.addClass("First");
 	btnFirst.text("First");
-	btnFirst.data("val", "First");
 	var btnPrevious = $("<button>");
 	btnPrevious.addClass("btn");
 	btnPrevious.addClass("Previous");
 	btnPrevious.text("Previous");
-	btnPrevious.data("val", "Previous");	
+	btnPrevious.data("val", 1);	
 	var btnNext = $("<button>");
 	btnNext.addClass("btn");
 	btnNext.addClass("Next");
@@ -84,7 +64,6 @@ function footerInicial(papa){
 	btnLast.addClass("btn");
 	btnLast.addClass("Last");
 	btnLast.text("Last");	
-	btnLast.data("val", "Last");
 	divGroup.append(btnFirst); 
 	divGroup.append(btnPrevious);
 	inicialBtnNumPags(papa, divGroup); 
@@ -113,44 +92,26 @@ function inicialBtnNumPags(papa, divGroup){
 }
 
 
-/****************Función configBtn*****************/
-function configBtn(papa){
-	var pageSize = 10;
-	papa.find(".tamaPag").click(function(){  //botones Select-Option
+/****************Función configBtns*****************/
+function configBtns(papa){
+	configBtnTamaPag(papa);       //Boton que configura tamaño de página 
+	configBtnNextPag(papa);       //Boton que configura mostrar página siguiente 
+	configBtnPreviousPag(papa);   //Boton que configura mostrar página anterior 	
+	configBtnFirstPag(papa);      //Boton que configura mostrar primera página  
+	configBtnLastPag(papa);       //Boton que configura mostrar última página
+	configBtnNumPags(papa);       //Botones que configuran mostrar páginas  		  		
+}
+
+
+/***************Función configBtnTamaPag**************/
+function configBtnTamaPag(papa){
+	papa.find(".tamaPag").click(function(pageSize){  //botones Select-Option		
 		var pageSize = $(this).val();
-		console.log(pageSize);
-		mostrarTamaPag(papa, pageSize); 
-		//mostrarNextPag(papa, pageSize, val);		
-	});
-
-	papa.find(".First").click(function(){    //boton clase First
-		val = $(this).data("val");
-		//console.log(val);
-		mostrarFirstPag(papa, pageSize);
-	});
-
-	papa.find(".Previous").click(function(){    //boton clase Previous
-		val = $(this).data("val");
-		//console.log(val);
-		mostrarPreviousPag();
-	});
-
-	papa.find(".boton").click(function(){    //clase botones numeración página
-		val = $(this).data("val");
-		//console.log(val);
-		mostrarPagNum(papa, pageSize);
-	});
-
-	papa.find(".Next").click(function(){    //boton clase Next
-		val = $(this).data("val");
-		//console.log(val);
-		mostrarNextPag(papa, pageSize, val);
-	});
-
-	papa.find(".Last").click(function(){    //boton clase Last
-		val = $(this).data("val");
-		//console.log(val);
-		mostrarLastPag(papa, pageSize);
+		papa.find(".tamaPag").data("pageSize", pageSize);
+		if (pageSize != "") {
+			console.log(pageSize);
+			mostrarTamaPag(papa, pageSize); 			
+		}				
 	});
 }
 
@@ -168,7 +129,6 @@ function mostrarTamaPag(papa, pageSize){
 }
 
 
-
 /***************Función configNumBtn**************/
 function configNumBtn(papa, pageSize){
 	var leng = papa.find("tbody tr").length;
@@ -183,84 +143,139 @@ function configNumBtn(papa, pageSize){
 	for (var i = numsPag + 1; i <= numsPagInicial; i++) {			
 			papa.find(".numsPag" + i).hide();					
 	}
-	//var val = 1; 
-	//papa.find(".Next").data("val", val);
-	//mostrarNextPag(papa, pageSize, val); 
+	papa.find(".btn-group").data("numsPag", numsPag);
 }
 
 
-/***************Función mostrarFirstPag**************/
-function mostrarFirstPag(papa, pageSize){
-	var leng = papa.find("tbody tr").length;
-	for (var i = 0; i < 10; i++) {			
-			papa.find(".pos" + i).show();		
-	}
-	for (var i = 10; i < leng; i++) {			
-			papa.find(".pos" + i).hide();		
-	}
-}
-
-
-/***************Función mostrarPreviousPag**************/
-function mostrarPreviousPag(papa, pageSize){
-	var leng = papa.find("tbody tr").length;
-	for (var i = 0; i < 10; i++) {			
-			papa.find(".pos" + i).show();		
-	}
-	for (var i = 10; i < leng; i++) {			
-			papa.find(".pos" + i).hide();		
-	}
-}
-
-
-/***************Función mostrarPagNum**************/
-function mostrarPagNum(papa, pageSize){
-	var leng = papa.find("tbody tr").length;
-	for (var i = 0; i < 10; i++) {			
-			papa.find(".pos" + i).show();		
-	}
-	for (var i = 10; i < leng; i++) {			
-			papa.find(".pos" + i).hide();		
-	}
+/***************Función configBtnNextPag**************/
+function configBtnNextPag(papa){	
+	papa.find(".Next").click(function(){    //boton clase Next
+		val = $(this).data("val");
+		var pageSize1 = papa.find(".tamaPag").data("pageSize");
+		mostrarNextPag(papa, pageSize1, val);		
+	})	
 }
 
 
 /***************Función mostrarNextPag**************/
-function mostrarNextPag(papa, pageSize, val){	
-	if (val == 1){
+function mostrarNextPag(papa, pageSize1, val){	
+	var numsPag = papa.find(".btn-group").data("numsPag");
+	if (val < numsPag) {
 		var val = $(".Next").data("val");
 		var leng = papa.find("tbody tr").length;
-		for (var i = val*pageSize; i < (val + 1)*pageSize; i++) {			
+		for (var i = val*pageSize1; i < (val + 1)*pageSize1; i++) {			
 				papa.find(".pos" + i).show();		
 		}	
-		for (var i = 0; i < val*pageSize; i++) {			
+		for (var i = 0; i < val*pageSize1; i++) {			
 				papa.find(".pos" + i).hide();		
 		}
 		val += 1;
 		papa.find(".Next").data("val", val);
-	}else if (val != 1){
-		papa.find(".Next").data("val", val);
-		var val = $(".Next").data("val");
-		var leng = papa.find("tbody tr").length;
-		for (var i = val*pageSize; i < (val + 1)*pageSize; i++) {			
-				papa.find(".pos" + i).show();		
-		}	
-		for (var i = 0; i < val*pageSize; i++) {			
-				papa.find(".pos" + i).hide();		
-		}
-		val += 1;
-		papa.find(".Next").data("val", val);
+		papa.find(".Previous").data("val", val);	
 	}	
 }
 
 
-/***************Función mostrarLastPag**************/
-function mostrarLastPag(papa, pageSize){
+/***************Función configBtnPreviousPag**************/
+function configBtnPreviousPag(papa){	
+	papa.find(".Previous").click(function(){    //boton clase Previous
+		val = $(this).data("val");
+		var pageSize1 = papa.find(".tamaPag").data("pageSize");
+		mostrarPreviousPag(papa, pageSize1, val);		
+	});	
+}
+
+
+/***************Función mostrarPreviousPag**************/
+function mostrarPreviousPag(papa, pageSize1, val){	
+	if (val > 1) {
+		var val = $(".Previous").data("val");
+		var leng = papa.find("tbody tr").length;
+		for (var i = (val - 2)*pageSize1; i < (val - 1)*pageSize1; i++) {			
+				papa.find(".pos" + i).show();		
+		}	
+		for (var i = (val - 1)*pageSize1; i < leng; i++) {			
+				papa.find(".pos" + i).hide();		
+		}
+		val -= 1;
+		papa.find(".Previous").data("val", val);
+		papa.find(".Next").data("val", val)
+	}				
+}
+
+
+/***************Función configBtnFirstPag**************/
+function configBtnFirstPag(papa){	
+	papa.find(".First").click(function(){    //boton clase First
+		var pageSize1 = papa.find(".tamaPag").data("pageSize");
+		mostrarFirstPag(papa, pageSize1);		
+	});	
+}
+
+
+/***************Función mostrarFirstPag**************/
+function mostrarFirstPag(papa, pageSize1){	
 	var leng = papa.find("tbody tr").length;
-	for (var i = 0; i < 10; i++) {			
-			papa.find(".pos" + i).show();		
+	for (var i = 0; i < pageSize1; i++) {			
+		papa.find(".pos" + i).show();		
 	}
-	for (var i = 10; i < leng; i++) {			
-			papa.find(".pos" + i).hide();		
+	for (var i = pageSize1; i < leng; i++) {			
+		papa.find(".pos" + i).hide();		
+	}	
+	papa.find(".Previous").data("val", 1);
+	papa.find(".Next").data("val", 1)		
+}
+
+
+/***************Función configBtnLastPag**************/
+function configBtnLastPag(papa){	
+	papa.find(".Last").click(function(){    //boton clase Last
+		var pageSize1 = papa.find(".tamaPag").data("pageSize");
+		mostrarLastPag(papa, pageSize1);		
+	});	
+}
+
+
+/***************Función mostrarLastPag**************/
+function mostrarLastPag(papa, pageSize1){	
+	var numsPag = papa.find(".btn-group").data("numsPag");
+	var leng = papa.find("tbody tr").length;
+	leng = leng - 1;
+	for (var i = (leng - pageSize1); i < leng; i++) {			
+		papa.find(".pos" + i).show();		
 	}
+	for (var i = 0; i < (leng - pageSize1); i++) {			
+		papa.find(".pos" + i).hide();		
+	}	
+	papa.find(".Previous").data("val", numsPag);
+	papa.find(".Next").data("val", numsPag);		
+}
+
+
+/***************Función configBtnNumPags**************/
+function configBtnNumPags(papa){	
+	papa.find(".boton").click(function(){    //botones de enumeración de página
+		var pageSize1 = papa.find(".tamaPag").data("pageSize");
+		var numPag = $(this).data("val");
+		console.log(numPag);
+		mostrarNumPag(papa, pageSize1, numPag);		
+	});	
+}
+
+
+/***************Función mostrarNumPag**************/
+function mostrarNumPag(papa, pageSize1, numPag){	
+	var numsPag = papa.find(".btn-group").data("numsPag");
+	var leng = papa.find("tbody tr").length;
+	for (var i = (numPag - 1)*pageSize1; i < numPag*pageSize1; i++) {			
+		papa.find(".pos" + i).show();		
+	}
+	for (var i = 0; i < (numPag - 1)*pageSize1; i++) {			
+		papa.find(".pos" + i).hide();		
+	}	
+	for (var i = numPag*pageSize1; i < leng; i++) {			
+		papa.find(".pos" + i).hide();		
+	}
+	papa.find(".Previous").data("val", numPag);
+	papa.find(".Next").data("val", numPag);		
 }
